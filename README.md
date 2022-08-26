@@ -17,7 +17,7 @@ A cordova plugin for printing on android platform, which support text,image(BitM
 Using the Cordova CLI and NPM, run:
 
 ```
-cordova plugin add https://Bishal_Mav@bitbucket.org/Bishal_Mav/cordova-plugin-printerplugin.git
+cordova plugin add https://github.com/myrdevelopment/cordova-plugin-printerplugin
 ```
 or
 ```

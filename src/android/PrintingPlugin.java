@@ -149,9 +149,7 @@ public class PrintingPlugin extends CordovaPlugin {
             return true;
         } else if (action.equals("connect")) {
             String name = args.getString(0);
-//            String dialog = "{theme : 'DEVICE_DARK',progressStyle : 'SPINNER',cancelable : true,title : 'Please Wait...',message : 'Connecting to the printer...'}";
-//            dialogPopUp(dialog);
-            Toast.makeText(cordova.getActivity(), "Connecting...", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(cordova.getActivity(), "Connecting...", Toast.LENGTH_SHORT).show();
             if (mmSocket != null) {
                 if (mmSocket.isConnected()) {
                     try {
@@ -224,8 +222,6 @@ public class PrintingPlugin extends CordovaPlugin {
             success = false;
             wifiPrinters = false;
             String name = args.getString(0);
-//            String dialog = "{theme : 'DEVICE_DARK',progressStyle : 'SPINNER',cancelable : true,title : 'Please Wait...',message : 'Connecting to the printer...'}";
-//            dialogPopUp(dialog);
             Toast.makeText(cordova.getActivity(), "Connecting...", Toast.LENGTH_SHORT).show();
             if (mmSocket != null) {
                 if (mmSocket.isConnected()) {
@@ -292,7 +288,6 @@ public class PrintingPlugin extends CordovaPlugin {
             }
             return true;
         } else if (action.equals("printImage")) {
-            //String dialog = "{theme : 'TRADITIONAL',progressStyle : 'SPINNER',cancelable : true,title : 'Please Wait...',message : 'Printing...'}";
             try {
                 String msg = "/" + args.getString(0);
                 //Input stream
@@ -541,16 +536,7 @@ public class PrintingPlugin extends CordovaPlugin {
             Log.d(LOG_TAG, String.valueOf(success));
             output.write(msg.getBytes());
             Log.d(PRINT, "Successfully appended the text data");
-//            if (success) {
-//                mmOutputStream.write(msg.getBytes());
-//                callbackContext.success("Data Sent to Bluetooth printer");
-//            } else if (wifiPrinters) {
-//                prints(callbackContext, msg.getBytes());
-//            } else if (!success && Printer.usbDeviceConnection != null)
-//                print(callbackContext, msg.getBytes());
-            // tell the user data were sent
-            //Log.d(LOG_TAG, "Data Sent");
-
+            callbackContext.success("Success");
         } catch (Exception e) {
             String errMsg = e.getMessage();
             Log.e(PRINT, errMsg);
@@ -564,15 +550,8 @@ public class PrintingPlugin extends CordovaPlugin {
         try {
             Log.d(PRINT, String.valueOf(success));
             output.write(buffer);
-//            if (success) {
-//                mmOutputStream.write(buffer);
-//                callbackContext.success("Data Sent");
-//            } else if (wifiPrinters) {
-//                prints(callbackContext, buffer);
-//            } else if (!success && Printer.usbDeviceConnection != null)
-//                print(callbackContext, buffer);
-            // tell the user data were sent
             Log.d(PRINT, "Successfully appended the POS Command");
+            callbackContext.success("Success");
         } catch (Exception e) {
             String errMsg = e.getMessage();
             Log.e(PRINT, errMsg);
@@ -615,18 +594,11 @@ public class PrintingPlugin extends CordovaPlugin {
             byte[] decodedBitmap = decodeBitmap(bitmap);
             output.write(decodedBitmap);
             Log.d(PRINT, "Successfully appended the image data");
-//            if (success) {
-//                mmOutputStream.write(bt);
-//                callbackContext.success("Data Sent");
-//            } else if (wifiPrinters) {
-//                prints(callbackContext, bt);
-//            } else if (!success && Printer.usbDeviceConnection != null)
-//                print(callbackContext, bt);
+            callbackContext.success("Success");
         } catch (Exception e) {
             String errMsg = e.getMessage();
             Log.e(LOG_TAG, errMsg);
             e.printStackTrace();
-            //Toast.makeText(cordova.getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
             callbackContext.error("Error is printImage() : " + errMsg);
         }
     }

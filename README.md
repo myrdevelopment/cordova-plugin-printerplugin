@@ -30,9 +30,9 @@ cordova plugin add /path/to/plugin/directory
   
  ---
 
-#### Get list of paired bluetooth printers
+#### Get list of paired bluetooth, wifi or usb printers
 ```
-CordovaPrint.bluetoothList(function(data){
+CordovaPrint.list(function(data){
         console.log("Success");
         console.log(data); //list of printer in data array
     },function(err){
@@ -40,30 +40,6 @@ CordovaPrint.bluetoothList(function(data){
         console.log(err);
     })
 ```
-
-
-#### Get list of paired wifi printers
-```
-CordovaPrint.wifiList(function(data){
-        console.log("Success");
-        console.log(data); //list of printer in data array
-    },function(err){
-        console.log("Error");
-        console.log(err);
-    })
-```
-
-#### Get list of paired USB printers
-```
-CordovaPrint.usbList(function(data){
-        console.log("Success");
-        console.log(data); //list of printer in data array
-    },function(err){
-        console.log("Error");
-        console.log(err);
-    })
-```
-
 
 #### Connect to the printer
 ```
@@ -162,71 +138,8 @@ CordovaPrint.print(function(data){
 },function(err){
     console.log("Error");
     console.log(err)
-}, "Base64 String of Image")
+})
 ```
-
-
-#### Initiate progress dialog
-```
-CordovaPrint.initDialog(function(data){
-    console.log("Success");
-    console.log(data)
-},function(err){
-    console.log("Error");
-    console.log(err)
-}, darkDialogTheme)
-darkDialogTheme = "{theme : 'DEVICE_DARK',progressStyle : 'SPINNER',cancelable : true,title : 'Please Wait...',message : 'Scanning for Wifi printers...'}";
-```
-
-#### Dismiss the progress dialog
-```
- CordovaPrint.dismissDialog(function(msg){
-    console.log(msg);
- },function(err){
-    console.log("Unable to dismiss");
-    console.log(err);
-   });
-```
-
-
-
-# Functions
-----------
-
-### .init(_arguments_)
-
-Initialize the progress dialog and set various parameters.
-These are the valid options:
-
-`theme`: can be one of the following:
-`TRADITIONAL`, `DEVICE_DARK`, `DEVICE_LIGHT` (default), `HOLO_DARK`, `HOLO_LIGHT`
-
-
-`progressStyle`: can be one of the following:
-`SPINNER` (default), `HORIZONTAL`
-
-`cancelable`: `true` (default) or `false`
-
-`title`: title of the progress dialog (defaults to empty)
-
-`message`: contents of the progress dialog (defaults to empty)
-
-`autoHide`:can hide automatically
-
-    CordovaPrint.initDialog({
-        theme : 'HOLO_DARK',
-        progressStyle : 'SPINNER',
-        cancelable : true,
-        title : 'Please Wait...',
-        message : 'Contacting server ...',
-        autoHide:3000
-    });
-
-### .dismiss()
-
-Dismiss the progress dialog.
-
-    CordovaPrint.dismissDialog();
 
 
 ## ESCPOS_Commands

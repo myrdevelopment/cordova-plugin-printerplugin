@@ -1194,28 +1194,13 @@ public class PrintingPlugin extends CordovaPlugin {
 
             });
         }
-        /*try {
-            Thread.sleep(33000);
+        try {
+            Thread.sleep(15000);
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }*/
+        }
     }
-
-    //        for (int i = 0; i < ips.size(); i += 10) {
-//            List<String> subIps=new ArrayList<>();
-//            AsyncTaskHelper.executeTask(new AsyncTask<Void, Void, Boolean>() {
-//
-//                @Override
-//                protected Boolean doInBackground(Void... voids) {
-//                    return connect();
-//                }
-//
-//                @Override
-//                protected void onPostExecute(Boolean aBoolean) {
-//                    super.onPostExecute(aBoolean);
-//                }
-//            });
-//        }
+    
     private static void executeTask(AsyncTask asyncTask) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             Executor myExecutor = Executors.newFixedThreadPool(20);

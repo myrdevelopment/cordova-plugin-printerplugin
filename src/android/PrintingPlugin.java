@@ -1194,11 +1194,11 @@ public class PrintingPlugin extends CordovaPlugin {
 
             });
         }
-        try {
-            //Thread.sleep(33000);
+        /*try {
+            Thread.sleep(33000);
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     //        for (int i = 0; i < ips.size(); i += 10) {

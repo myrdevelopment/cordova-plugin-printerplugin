@@ -1195,7 +1195,7 @@ public class PrintingPlugin extends CordovaPlugin {
             });
         }
         try {
-            Thread.sleep(33000);
+            //Thread.sleep(33000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

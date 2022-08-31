@@ -1137,7 +1137,6 @@ public class PrintingPlugin extends CordovaPlugin {
         Log.d(TAGS, " scanWifi");
         final Vector<String> results = new Vector<String>();
         ExecutorService executorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
-        List<Future<AsyncTask>> tasks = new ArrayList<AsyncTask>();
         final int totalSize = ips.size();
         final int splitSize = 10;
         resetIndex();
@@ -1163,14 +1162,14 @@ public class PrintingPlugin extends CordovaPlugin {
                         if (index == ips.size() - 1) {
                             long end = System.currentTimeMillis();
                             Log.d(TAGS, "scanning time: " + (end - start) / 1000);
-                            return null;
+                            return;
                         }
                     }
                 }
             });
             
             executorService.shutdown();
-            executorService.awaitTermination();
+            executorService.awaitTermination(15, TimeUnit.SECONDS);
             
             /*AsyncTask task = new AsyncTask() {
                 @Override

@@ -932,7 +932,7 @@ public class PrintingPlugin extends CordovaPlugin {
         String[] base64Printers = base64PrinterString.split("|");
         for (String base64Printer : base64Printers) {
             byte[] bytes = Base64.decode(base64Printer, Base64.DEFAULT);
-            String printerName = new String(bytes, "UTF-8");
+            String printerName = new String(bytes);
             entirePrintersList.put(printerName);
         }
     }

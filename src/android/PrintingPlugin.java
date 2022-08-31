@@ -1147,7 +1147,7 @@ public class PrintingPlugin extends CordovaPlugin {
             Log.d(TAGS, " scanning batch: " + i);
             final List<String> child = new ArrayList<String>(ips.subList(i, Math.min(totalSize, i + splitSize)));
             
-            executorService.execute(new Runnable {
+            executorService.execute(new Runnable() {
                 //background thread
                 for (String ip : child) {
                         Log.d(TAGS, " scanning : " + index + ", ip: " + ip);

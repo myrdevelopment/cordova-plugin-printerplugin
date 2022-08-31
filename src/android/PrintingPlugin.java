@@ -25,17 +25,21 @@ import android.hardware.usb.UsbConstants;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.os.Build;
+//import android.os.CountDownTimer;
 import android.util.Log;
 import android.widget.Toast;
+//import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CallbackContext;
 import org.json.JSONArray;
 import org.json.JSONException;
+//import org.json.JSONObject;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.os.Environment;
+//import android.os.Handler;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -44,12 +48,17 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Bitmap.Config;
+//import android.util.Xml.Encoding;
 import android.util.Base64;
+//import android.view.Gravity;
+//import android.widget.Toast;
 import cordova.plugin.base.BasePrinter;
 import cordova.plugin.exceptions.GenericPrinterException;
 import cordova.plugin.usbImplementation.Printer;
 import cordova.plugin.interfaces.IGenericPrinter;
 import cordova.plugin.interfaces.IVariables;
+//import org.json.JSONException;
+//import org.json.JSONObject;
 import java.util.List;
 
 import android.net.wifi.WifiInfo;
@@ -61,20 +70,23 @@ import cordova.plugin.wifiPrinters.Printers;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+//import java.net.DatagramPacket;
+//import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.util.ArrayList;
+//import java.util.LinkedList;
 
 import java.util.Vector;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
 import static java.lang.Integer.toHexString;
+
 
 /**
  * Communication between native Java and JavaScript
@@ -83,7 +95,6 @@ public class PrintingPlugin extends CordovaPlugin {
 
     private final String PRINT = "Printing Plugin";
     private final String TAG = "USBPrinter";
-    private static final int THREAD_POOL_SIZE = 20;
     private UsbManager usbManager; //USB device manager
     private UsbDevice usbDevice;//Represents the current printer
     private PendingIntent pendingIntent;
@@ -1098,11 +1109,17 @@ public class PrintingPlugin extends CordovaPlugin {
             List<String> ips = new ArrayList<String>();
             int START_IP = 1;
             int END_IP = 254;
-            
             for (int i = START_IP; i <= END_IP; i++) {
                 String starIp = getStarOrEndIp(printer.ip, i, true);
                 ips.add(starIp);
+//                Log.d(TAGS, "Adding task");
+//                if (tryToConnect(starIp)) {
+//                    printers.put(starIp);
+//                    Log.d(TAGS, "Printers found in wifi" + printers.toString());
+//                }
             }
+//            final Object wait=new Object();
+//            synchronized (wait){
 
             scanWifi(ips, new PrintingPlugin.OnIPScanningCallback() {
                 @Override
@@ -1137,7 +1154,6 @@ public class PrintingPlugin extends CordovaPlugin {
     private void scanWifi(final List<String> ips, final PrintingPlugin.OnIPScanningCallback callback) {
         Log.d(TAGS, " scanWifi");
         final Vector<String> results = new Vector<String>();
-        ExecutorService executorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
         final int totalSize = ips.size();
         final int splitSize = 10;
         resetIndex();
@@ -1146,35 +1162,16 @@ public class PrintingPlugin extends CordovaPlugin {
 
             Log.d(TAGS, " scanning batch: " + i);
             final List<String> child = new ArrayList<String>(ips.subList(i, Math.min(totalSize, i + splitSize)));
-            
-            executorService.execute(new Runnable() {
-                //background thread
-                public void run() {
-                      for (String ip : child) {
-                        Log.d(TAGS, " scanning : " + index + ", ip: " + ip);
-                        index++;
-                        if (connect(ip)) {
-                            results.add(ip);
-                            results.clear();
-                        }
-                        long time = System.currentTimeMillis() - start;
-                        Log.d(TAGS, "time taken :" + time);
-                        if (index == ips.size() - 1) {
-                            long end = System.currentTimeMillis();
-                            Log.d(TAGS, "scanning time: " + (end - start) / 1000);
-                            return;
-                        }
-                    }
-                }
-            });
-            
-            /*AsyncTask task = new AsyncTask() {
+            executeTask(new AsyncTask() {
                 @Override
                 protected Object doInBackground(Object[] objects) {
+//                    synchronized (index) {
 
                     for (String ip : child) {
+
                         Log.d(TAGS, " scanning : " + index + ", ip: " + ip);
                         index++;
+                        //boolean isPrinter = connect(ip);
                         if (connect(ip)) {
                             results.add(ip);
                             callback.onScanningComplete(results);
@@ -1185,29 +1182,33 @@ public class PrintingPlugin extends CordovaPlugin {
                         if (index == ips.size() - 1) {
                             long end = System.currentTimeMillis();
                             Log.d(TAGS, "scanning time: " + (end - start) / 1000);
+                            //callback.onScanningComplete(results);
                             return null;
                         }
+//                            } else {
+//                                index++;
+//                            }
+//                        }
                     }
-                    
                     return null;
                 }
 
-            };*/  
+            });
         }
-
-        executorService.shutdown();
         try {
-            executorService.awaitTermination(15, TimeUnit.SECONDS);
-        } catch (InterruptedException e) { 
-            e.printStackTrace(); 
+            Thread.sleep(15000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-        callback.onScanningComplete(results);
-    
     }
     
     private static void executeTask(AsyncTask asyncTask) {
-        ExecutorService myExecutor = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
-        asyncTask.executeOnExecutor(myExecutor);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            Executor myExecutor = Executors.newFixedThreadPool(20);
+            asyncTask.executeOnExecutor(myExecutor);
+        } else {
+            asyncTask.execute();
+        }
     }
 
     private boolean findWifiPrinter(String ipOfThePrinter) {
@@ -1361,8 +1362,3 @@ public class PrintingPlugin extends CordovaPlugin {
     }
 
 }
-
-
-
-
-

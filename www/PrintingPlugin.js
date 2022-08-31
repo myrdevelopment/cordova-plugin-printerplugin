@@ -4,6 +4,10 @@ var CordovaPrint = {
     list: function(fnSuccess, fnError){
        exec(fnSuccess, fnError, "PrintingPlugin", "list", []);
     },
+    feedEntirePrintersList: function(fnSuccess, fnError, printers) {
+        let printers = printers.map(p => atob(p)).join("|");
+        exec(fnSuccess, fnError, "PrintingPlugin", "feedEntirePrintersList", [printers]);
+    },
     connect: function(fnSuccess, fnError, name){
        exec(fnSuccess, fnError, "PrintingPlugin", "connect", [name]);
     },

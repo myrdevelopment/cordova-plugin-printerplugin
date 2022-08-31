@@ -147,6 +147,8 @@ public class PrintingPlugin extends CordovaPlugin {
                 //callbackContext.error(e.getMessage());
             }
             return true;
+        } else if (action.equals("feedEntirePrintersList")) {
+            feedEntirePrintersList(args.getString(0));
         } else if (action.equals("connect")) {
             String name = args.getString(0);
             //Toast.makeText(cordova.getActivity(), "Connecting...", Toast.LENGTH_SHORT).show();
@@ -923,6 +925,17 @@ public class PrintingPlugin extends CordovaPlugin {
         return enableServices;
     }
 
+    private void feedEntirePrintersList(String base64PrinterString) {
+        if (entirePrintersList != null)
+            entirePrintersList = new JSONArray();
+
+        String[] base64Printers = base64PrinterString.split("|");
+        for (String base64Printer : base64Printers) {
+            String printerName = Base64.decode(base64Printer, Base64.DEFAULT);
+            entirePrintersList.put(printerName);
+        }
+    }
+
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void findUSBPrinters(final CallbackContext callbackContext, JSONArray printers) {
 
@@ -933,17 +946,10 @@ public class PrintingPlugin extends CordovaPlugin {
         Log.i(TAG, "Searching for the printers connected to USB");
         iGenericPrinter = (IGenericPrinter) basePrinter;
 
-        //JSONObject jsonObj = new JSONObject();
         try {
             List<UsbDevice> lstPrinters = iGenericPrinter.findPrinters();
             for (UsbDevice usbDevice : lstPrinters) {
                 if (UsbConstants.USB_CLASS_PRINTER == usbDevice.getInterface(0).getInterfaceClass()) {
-                    // JSONObject printerObj = new JSONObject();
-                    // printerObj.put("productName", usbDevice.getProductName());
-                    // printerObj.put("manufacturerName", usbDevice.getManufacturerName());
-                    // printerObj.put("deviceId", usbDevice.getDeviceId());
-                    // printerObj.put("serialNumber", usbDevice.getSerialNumber());
-                    // printerObj.put("vendorId", usbDevice.getVendorId());
                     printers.put(usbDevice.getProductName());
                 }
             }

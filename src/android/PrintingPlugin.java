@@ -930,7 +930,7 @@ public class PrintingPlugin extends CordovaPlugin {
         entirePrintersList = new JSONArray();
         String[] printers = printersString.split("||||");
         Log.d(LOG_TAG, "printers" + printersString);
-        og.d(LOG_TAG, "printer string fed : " + String.valueOf(printers));
+        Log.d(LOG_TAG, "printer string fed : " + String.valueOf(printers));
         for (String printer : printers) {
             entirePrintersList.put(printer);
         }

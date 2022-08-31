@@ -149,6 +149,7 @@ public class PrintingPlugin extends CordovaPlugin {
             return true;
         } else if (action.equals("feedEntirePrintersList")) {
             feedEntirePrintersList(args.getString(0));
+            return true;
         } else if (action.equals("connect")) {
             String name = args.getString(0);
             //Toast.makeText(cordova.getActivity(), "Connecting...", Toast.LENGTH_SHORT).show();
@@ -926,10 +927,10 @@ public class PrintingPlugin extends CordovaPlugin {
     }
 
     private void feedEntirePrintersList(String printersString) {
-        if (entirePrintersList != null)
-            entirePrintersList = new JSONArray();
-
+        entirePrintersList = new JSONArray();
         String[] printers = printersString.split("||||");
+        Log.d(LOG_TAG, "printers" + printersString);
+        og.d(LOG_TAG, "printer string fed : " + String.valueOf(printers));
         for (String printer : printers) {
             entirePrintersList.put(printer);
         }

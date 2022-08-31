@@ -95,6 +95,7 @@ public class PrintingPlugin extends CordovaPlugin {
 
     private final String PRINT = "Printing Plugin";
     private final String TAG = "USBPrinter";
+    private final int THREAD_POOL_SIZE = 20;
     private UsbManager usbManager; //USB device manager
     private UsbDevice usbDevice;//Represents the current printer
     private PendingIntent pendingIntent;
@@ -1109,17 +1110,11 @@ public class PrintingPlugin extends CordovaPlugin {
             List<String> ips = new ArrayList<String>();
             int START_IP = 1;
             int END_IP = 254;
+            
             for (int i = START_IP; i <= END_IP; i++) {
                 String starIp = getStarOrEndIp(printer.ip, i, true);
                 ips.add(starIp);
-//                Log.d(TAGS, "Adding task");
-//                if (tryToConnect(starIp)) {
-//                    printers.put(starIp);
-//                    Log.d(TAGS, "Printers found in wifi" + printers.toString());
-//                }
             }
-//            final Object wait=new Object();
-//            synchronized (wait){
 
             scanWifi(ips, new PrintingPlugin.OnIPScanningCallback() {
                 @Override
@@ -1154,6 +1149,7 @@ public class PrintingPlugin extends CordovaPlugin {
     private void scanWifi(final List<String> ips, final PrintingPlugin.OnIPScanningCallback callback) {
         Log.d(TAGS, " scanWifi");
         final Vector<String> results = new Vector<String>();
+        List<AsyncTask> tasks = new ArrayList<AsyncTask>();
         final int totalSize = ips.size();
         final int splitSize = 10;
         resetIndex();
@@ -1162,16 +1158,13 @@ public class PrintingPlugin extends CordovaPlugin {
 
             Log.d(TAGS, " scanning batch: " + i);
             final List<String> child = new ArrayList<String>(ips.subList(i, Math.min(totalSize, i + splitSize)));
-            executeTask(new AsyncTask() {
+            AsyncTask task = new AsyncTask() {
                 @Override
                 protected Object doInBackground(Object[] objects) {
-//                    synchronized (index) {
 
                     for (String ip : child) {
-
                         Log.d(TAGS, " scanning : " + index + ", ip: " + ip);
                         index++;
-                        //boolean isPrinter = connect(ip);
                         if (connect(ip)) {
                             results.add(ip);
                             callback.onScanningComplete(results);
@@ -1182,33 +1175,29 @@ public class PrintingPlugin extends CordovaPlugin {
                         if (index == ips.size() - 1) {
                             long end = System.currentTimeMillis();
                             Log.d(TAGS, "scanning time: " + (end - start) / 1000);
-                            //callback.onScanningComplete(results);
                             return null;
                         }
-//                            } else {
-//                                index++;
-//                            }
-//                        }
                     }
+                    
                     return null;
                 }
 
-            });
+            };
+            tasks.add(task);
         }
-        try {
-            Thread.sleep(15000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        
+        ExecutorService executor = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
+        executor.invokeAll(tasks);
     }
     
-    private static void executeTask(AsyncTask asyncTask) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            Executor myExecutor = Executors.newFixedThreadPool(20);
-            asyncTask.executeOnExecutor(myExecutor);
-        } else {
-            asyncTask.execute();
-        }
+    private static boolean executeTask(AsyncTask asyncTask) {
+        ExecutorService myExecutor = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
+        asyncTask.executeOnExecutor(myExecutor);
+        List<AsyncTask> list = new ArrayList<AsyncTask>();
+        list.add(asyncTask);
+        myExecutor.invokeAll(list);
+        
+        return true;
     }
 
     private boolean findWifiPrinter(String ipOfThePrinter) {

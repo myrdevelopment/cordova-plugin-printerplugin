@@ -1170,7 +1170,11 @@ public class PrintingPlugin extends CordovaPlugin {
             });
             
             executorService.shutdown();
-            executorService.awaitTermination(15, TimeUnit.SECONDS);
+            try {
+                executorService.awaitTermination(15, TimeUnit.SECONDS);
+            } catch (InterruptedException e) { 
+                e.printStackTrace(); 
+            }
             
             /*AsyncTask task = new AsyncTask() {
                 @Override

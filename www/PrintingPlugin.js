@@ -5,7 +5,7 @@ var CordovaPrint = {
        exec(fnSuccess, fnError, "PrintingPlugin", "list", []);
     },
     feedEntirePrintersList: function(fnSuccess, fnError, printersList) {
-        let joinedPrintersList = printersList.map(p => atob(p)).join("|");
+        let joinedPrintersList = printersList.join("||||");
         exec(fnSuccess, fnError, "PrintingPlugin", "feedEntirePrintersList", [joinedPrintersList]);
     },
     connect: function(fnSuccess, fnError, name){

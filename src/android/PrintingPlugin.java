@@ -925,15 +925,13 @@ public class PrintingPlugin extends CordovaPlugin {
         return enableServices;
     }
 
-    private void feedEntirePrintersList(String base64PrinterString) {
+    private void feedEntirePrintersList(String printersString) {
         if (entirePrintersList != null)
             entirePrintersList = new JSONArray();
 
-        String[] base64Printers = base64PrinterString.split("|");
-        for (String base64Printer : base64Printers) {
-            byte[] bytes = Base64.decode(base64Printer, Base64.DEFAULT);
-            String printerName = new String(bytes);
-            entirePrintersList.put(printerName);
+        String[] printers = printersString.split("||||");
+        for (String printer : printers) {
+            entirePrintersList.put(printer);
         }
     }
 

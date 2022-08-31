@@ -25,21 +25,17 @@ import android.hardware.usb.UsbConstants;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.os.Build;
-//import android.os.CountDownTimer;
 import android.util.Log;
 import android.widget.Toast;
-//import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CallbackContext;
 import org.json.JSONArray;
 import org.json.JSONException;
-//import org.json.JSONObject;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.os.Environment;
-//import android.os.Handler;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -48,17 +44,12 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Bitmap.Config;
-//import android.util.Xml.Encoding;
 import android.util.Base64;
-//import android.view.Gravity;
-//import android.widget.Toast;
 import cordova.plugin.base.BasePrinter;
 import cordova.plugin.exceptions.GenericPrinterException;
 import cordova.plugin.usbImplementation.Printer;
 import cordova.plugin.interfaces.IGenericPrinter;
 import cordova.plugin.interfaces.IVariables;
-//import org.json.JSONException;
-//import org.json.JSONObject;
 import java.util.List;
 
 import android.net.wifi.WifiInfo;
@@ -70,23 +61,19 @@ import cordova.plugin.wifiPrinters.Printers;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-//import java.net.DatagramPacket;
-//import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.util.ArrayList;
-//import java.util.LinkedList;
 
 import java.util.Vector;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 import static java.lang.Integer.toHexString;
-
 
 /**
  * Communication between native Java and JavaScript

@@ -1136,7 +1136,8 @@ public class PrintingPlugin extends CordovaPlugin {
     private void scanWifi(final List<String> ips, final PrintingPlugin.OnIPScanningCallback callback) {
         Log.d(TAGS, " scanWifi");
         final Vector<String> results = new Vector<String>();
-        List<AsyncTask> tasks = new ArrayList<AsyncTask>();
+        ExecutorService executorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
+        List<Future<AsyncTask>> tasks = new ArrayList<AsyncTask>();
         final int totalSize = ips.size();
         final int splitSize = 10;
         resetIndex();
@@ -1145,7 +1146,31 @@ public class PrintingPlugin extends CordovaPlugin {
 
             Log.d(TAGS, " scanning batch: " + i);
             final List<String> child = new ArrayList<String>(ips.subList(i, Math.min(totalSize, i + splitSize)));
-            AsyncTask task = new AsyncTask() {
+            
+            executorService.execute(new Runnable {
+                //background thread
+                for (String ip : child) {
+                        Log.d(TAGS, " scanning : " + index + ", ip: " + ip);
+                        index++;
+                        if (connect(ip)) {
+                            results.add(ip);
+                            callback.onScanningComplete(results);
+                            results.clear();
+                        }
+                        long time = System.currentTimeMillis() - start;
+                        Log.d(TAGS, "time taken :" + time);
+                        if (index == ips.size() - 1) {
+                            long end = System.currentTimeMillis();
+                            Log.d(TAGS, "scanning time: " + (end - start) / 1000);
+                            return null;
+                        }
+                    }
+            });
+            
+            executorService.shutdown();
+            executorService.awaitTermination();
+            
+            /*AsyncTask task = new AsyncTask() {
                 @Override
                 protected Object doInBackground(Object[] objects) {
 
@@ -1169,12 +1194,11 @@ public class PrintingPlugin extends CordovaPlugin {
                     return null;
                 }
 
-            };
-            tasks.add(task);
+            };*/
+           
+            
         }
-        
-        ExecutorService executor = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
-        executor.invokeAll(tasks);
+      
     }
     
     private static boolean executeTask(AsyncTask asyncTask) {

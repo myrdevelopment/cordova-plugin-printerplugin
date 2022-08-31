@@ -82,7 +82,7 @@ public class PrintingPlugin extends CordovaPlugin {
 
     private final String PRINT = "Printing Plugin";
     private final String TAG = "USBPrinter";
-    private final int THREAD_POOL_SIZE = 20;
+    private static final int THREAD_POOL_SIZE = 20;
     private UsbManager usbManager; //USB device manager
     private UsbDevice usbDevice;//Represents the current printer
     private PendingIntent pendingIntent;
@@ -1203,14 +1203,9 @@ public class PrintingPlugin extends CordovaPlugin {
       
     }
     
-    private static boolean executeTask(AsyncTask asyncTask) {
+    private static void executeTask(AsyncTask asyncTask) {
         ExecutorService myExecutor = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
         asyncTask.executeOnExecutor(myExecutor);
-        List<AsyncTask> list = new ArrayList<AsyncTask>();
-        list.add(asyncTask);
-        myExecutor.invokeAll(list);
-        
-        return true;
     }
 
     private boolean findWifiPrinter(String ipOfThePrinter) {

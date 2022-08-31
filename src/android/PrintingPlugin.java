@@ -1149,7 +1149,8 @@ public class PrintingPlugin extends CordovaPlugin {
             
             executorService.execute(new Runnable() {
                 //background thread
-                for (String ip : child) {
+                public void run() {
+                      for (String ip : child) {
                         Log.d(TAGS, " scanning : " + index + ", ip: " + ip);
                         index++;
                         if (connect(ip)) {
@@ -1165,6 +1166,7 @@ public class PrintingPlugin extends CordovaPlugin {
                             return null;
                         }
                     }
+                }
             });
             
             executorService.shutdown();

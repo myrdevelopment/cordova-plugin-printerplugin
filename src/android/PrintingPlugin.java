@@ -1155,7 +1155,6 @@ public class PrintingPlugin extends CordovaPlugin {
                         index++;
                         if (connect(ip)) {
                             results.add(ip);
-                            callback.onScanningComplete(results);
                             results.clear();
                         }
                         long time = System.currentTimeMillis() - start;
@@ -1175,6 +1174,8 @@ public class PrintingPlugin extends CordovaPlugin {
             } catch (InterruptedException e) { 
                 e.printStackTrace(); 
             }
+
+            callback.onScanningComplete(results);
             
             /*AsyncTask task = new AsyncTask() {
                 @Override

@@ -1137,7 +1137,7 @@ public class PrintingPlugin extends CordovaPlugin {
     private void scanWifi(final List<String> ips, final PrintingPlugin.OnIPScanningCallback callback) {
         Log.d(TAGS, " scanWifi");
         final Vector<String> results = new Vector<String>();
-        ExecutorService executorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
+        //ExecutorService executorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
         final int totalSize = ips.size();
         final int splitSize = 10;
         resetIndex();
@@ -1168,15 +1168,6 @@ public class PrintingPlugin extends CordovaPlugin {
                 }
             });
             
-            executorService.shutdown();
-            try {
-                executorService.awaitTermination(15, TimeUnit.SECONDS);
-            } catch (InterruptedException e) { 
-                e.printStackTrace(); 
-            }
-
-            callback.onScanningComplete(results);
-            
             /*AsyncTask task = new AsyncTask() {
                 @Override
                 protected Object doInBackground(Object[] objects) {
@@ -1201,11 +1192,17 @@ public class PrintingPlugin extends CordovaPlugin {
                     return null;
                 }
 
-            };*/
-           
-            
+            };*/  
         }
-      
+
+        executorService.shutdown();
+        try {
+            executorService.awaitTermination(15, TimeUnit.SECONDS);
+        } catch (InterruptedException e) { 
+            e.printStackTrace(); 
+        }
+        callback.onScanningComplete(results);
+    
     }
     
     private static void executeTask(AsyncTask asyncTask) {

@@ -136,10 +136,10 @@ public class PrintingPlugin extends CordovaPlugin {
 
         if (action.equals("list")) {
             //String dialog = "{theme : 'HOLO_LIGHT',progressStyle : 'SPINNER',cancelable : true,title : 'Please Wait...',message : 'Checking for connectivity services...'}";
-            Toast.makeText(cordova.getActivity(), "Scanning...", Toast.LENGTH_LONG).show();
+            //Toast.makeText(cordova.getActivity(), "Scanning...", Toast.LENGTH_LONG).show();
             final JSONArray json = new JSONArray();
             enableServices = enableServices(callbackContext, json);
-            Toast.makeText(cordova.getActivity(), "Scanning for Printers....", Toast.LENGTH_LONG).show();
+            //Toast.makeText(cordova.getActivity(), "Scanning for Printers....", Toast.LENGTH_LONG).show();
             try {
                 findUSBPrinters(callbackContext, listWifiPrinters(listBT(json)));
             } catch (Exception e) {
@@ -222,7 +222,7 @@ public class PrintingPlugin extends CordovaPlugin {
             success = false;
             wifiPrinters = false;
             String name = args.getString(0);
-            Toast.makeText(cordova.getActivity(), "Connecting...", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(cordova.getActivity(), "Connecting...", Toast.LENGTH_SHORT).show();
             if (mmSocket != null) {
                 if (mmSocket.isConnected()) {
                     try {
@@ -325,7 +325,7 @@ public class PrintingPlugin extends CordovaPlugin {
         } else if (action.equals("printPOSCommand")) {
             try {
                 String msg = args.getString(0);
-                printPOSCommand(callbackContext, hexStringToBytes(msg));
+                printPOSCommand(callbackContext, msg);
             } catch (IOException e) {
                 Log.e(PRINT, e.getMessage());
                 e.printStackTrace();
@@ -440,20 +440,20 @@ public class PrintingPlugin extends CordovaPlugin {
             mmOutputStream = mmSocket.getOutputStream();
             mmInputStream = mmSocket.getInputStream();
             beginListenForData();
-            Toast.makeText(cordova.getActivity(), "Successfully connected to the bluetooth printer...", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(cordova.getActivity(), "Successfully connected to the bluetooth printer...", Toast.LENGTH_SHORT).show();
             //Log.d(LOG_TAG, "Bluetooth Opened: " + mmDevice.getName());
             callbackContext.success("Bluetooth Opened: " + mmDevice.getName());
         } catch (IOException e) {
             String errMsg = e.getMessage();
             Log.e(LOG_TAG, errMsg);
             e.printStackTrace();
-            Toast.makeText(cordova.getActivity(), "Unable to Connect...", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(cordova.getActivity(), "Unable to Connect...", Toast.LENGTH_SHORT).show();
             callbackContext.error(errMsg);
         } catch (Exception e) {
             String errMsg = e.getMessage();
             Log.e(LOG_TAG, errMsg);
             e.printStackTrace();
-            Toast.makeText(cordova.getActivity(), "Unable to Connect...", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(cordova.getActivity(), "Unable to Connect...", Toast.LENGTH_SHORT).show();
             callbackContext.error(errMsg);
         }
     }
@@ -541,14 +541,15 @@ public class PrintingPlugin extends CordovaPlugin {
             String errMsg = e.getMessage();
             Log.e(PRINT, errMsg);
             e.printStackTrace();
-            Toast.makeText(cordova.getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(cordova.getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
             callbackContext.error("Error in printText() : " + errMsg);
         }
     }
 
-    private void printPOSCommand(CallbackContext callbackContext, byte[] buffer) throws IOException {
+    private void printPOSCommand(CallbackContext callbackContext, String base64EncriptedData) throws IOException {
         try {
             Log.d(PRINT, String.valueOf(success));
+            final byte[] buffer = Base64.decode(base64EncriptedData, Base64.DEFAULT);
             output.write(buffer);
             Log.d(PRINT, "Successfully appended the POS Command");
             callbackContext.success("Success");
@@ -556,7 +557,7 @@ public class PrintingPlugin extends CordovaPlugin {
             String errMsg = e.getMessage();
             Log.e(PRINT, errMsg);
             e.printStackTrace();
-            Toast.makeText(cordova.getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(cordova.getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
             callbackContext.error("Error in printPOSCommand() : " + errMsg);
         }
     }
@@ -568,13 +569,13 @@ public class PrintingPlugin extends CordovaPlugin {
             mmOutputStream.close();
             mmInputStream.close();
             mmSocket.close();
-            Toast.makeText(cordova.getActivity(), "Bluetooth printer disconnected", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(cordova.getActivity(), "Bluetooth printer disconnected", Toast.LENGTH_SHORT).show();
             callbackContext.success("Bluetooth Disconnect");
         } catch (IOException e) {
             String errMsg = e.getMessage();
             Log.e(LOG_TAG, errMsg);
             e.printStackTrace();
-            Toast.makeText(cordova.getActivity(), "Unable to disconnect", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(cordova.getActivity(), "Unable to disconnect", Toast.LENGTH_SHORT).show();
             callbackContext.error(errMsg);
         }
     }
@@ -620,7 +621,7 @@ public class PrintingPlugin extends CordovaPlugin {
             String errMsg = e.getMessage();
             Log.e(LOG_TAG, errMsg);
             e.printStackTrace();
-            Toast.makeText(cordova.getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(cordova.getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
             callbackContext.error(errMsg);
         }
     }
@@ -780,7 +781,7 @@ public class PrintingPlugin extends CordovaPlugin {
             String errMsg = e.getMessage();
             Log.e(LOG_TAG, errMsg);
             e.printStackTrace();
-            Toast.makeText(cordova.getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(cordova.getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
             callbackContext.error(errMsg);
 //        } catch (GenericPrinterException e) {
 //            e.printStackTrace();
@@ -788,7 +789,7 @@ public class PrintingPlugin extends CordovaPlugin {
 //            callbackContext.error(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(cordova.getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(cordova.getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
             callbackContext.error(e.getMessage());
         }
     }
@@ -987,7 +988,7 @@ public class PrintingPlugin extends CordovaPlugin {
                     if (usbDevice != null) {
                         usbManager.requestPermission(usbDevice,
                                 pendingIntent);
-                        Toast.makeText(cordova.getActivity(), "Successfully connected to the USB printer...", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(cordova.getActivity(), "Successfully connected to the USB printer...", Toast.LENGTH_SHORT).show();
                         callbackContext.success("Permission was granted to access the USB Device and usb printer was connected");
                     } else {
                         Log.e(TAG, "USB printer was not found");
@@ -1049,7 +1050,7 @@ public class PrintingPlugin extends CordovaPlugin {
                 } catch (GenericPrinterException e) {
                     Log.e(TAG, e.getMessage());
                     e.printStackTrace();
-                    Toast.makeText(cordova.getActivity(), "Unable to print...", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(cordova.getActivity(), "Unable to print...", Toast.LENGTH_LONG).show();
                     callbackContext.error(e.getMessage());
                 }
             }
@@ -1061,12 +1062,12 @@ public class PrintingPlugin extends CordovaPlugin {
             Log.i(TAG, "close connections");
             basePrinter.close();
             cordova.getActivity().unregisterReceiver(broadcastReceiver);
-            Toast.makeText(cordova.getActivity(), "USB printer disconnected", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(cordova.getActivity(), "USB printer disconnected", Toast.LENGTH_SHORT).show();
             callbackContext.success("Disconnected from the usb printer");
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
             e.printStackTrace();
-            Toast.makeText(cordova.getActivity(), "Unable to Disconnect", Toast.LENGTH_LONG).show();
+            //Toast.makeText(cordova.getActivity(), "Unable to Disconnect", Toast.LENGTH_LONG).show();
             callbackContext.error(e.getMessage());
         }
 
@@ -1079,7 +1080,7 @@ public class PrintingPlugin extends CordovaPlugin {
             wifiManager = (WifiManager) cordova.getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
             if (wifiManager != null && !wifiManager.isWifiEnabled()) {
-                Toast.makeText(cordova.getActivity(), "Enabling wifi...", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(cordova.getActivity(), "Enabling wifi...", Toast.LENGTH_SHORT).show();
                 wifiManager.setWifiEnabled(true);
             }
         } catch (Exception e) {
@@ -1232,11 +1233,11 @@ public class PrintingPlugin extends CordovaPlugin {
             mmOutputStream = client.getOutputStream();
             mmInputStream = client.getInputStream();
             beginListenForData();
-            Toast.makeText(cordova.getActivity(), "Successfully Connected to the Wifi Printer...", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(cordova.getActivity(), "Successfully Connected to the Wifi Printer...", Toast.LENGTH_SHORT).show();
             callbackContext.success("Successfully Connected to the :" + ipOfTheWifiPrinter + " WifiPrinter");
         } catch (IOException e) {
             e.printStackTrace();
-            Toast.makeText(cordova.getActivity(), "Unable to Connect...", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(cordova.getActivity(), "Unable to Connect...", Toast.LENGTH_SHORT).show();
             callbackContext.error(e.getMessage());
         }
 
@@ -1249,7 +1250,7 @@ public class PrintingPlugin extends CordovaPlugin {
                 mmOutputStream.write(data);
                 callbackContext.success("Successfully Printed on Wifi Printer");
             } else {
-                Toast.makeText(cordova.getActivity(), "No Printer Connected, Please connect to a printer and try again...", Toast.LENGTH_LONG).show();
+                //Toast.makeText(cordova.getActivity(), "No Printer Connected, Please connect to a printer and try again...", Toast.LENGTH_LONG).show();
                 callbackContext.error("No wifi printers connected");
             }
         } catch (Exception e) {
@@ -1264,13 +1265,13 @@ public class PrintingPlugin extends CordovaPlugin {
             mmOutputStream.close();
             mmInputStream.close();
             client.close();
-            Toast.makeText(cordova.getActivity(), "Wifi Printer disconnected", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(cordova.getActivity(), "Wifi Printer disconnected", Toast.LENGTH_SHORT).show();
             callbackContext.success("Bluetooth Disconnect");
         } catch (Exception e) {
             String errMsg = e.getMessage();
             Log.e(TAGS, errMsg);
             e.printStackTrace();
-            Toast.makeText(cordova.getActivity(), "Unable to Disconnect", Toast.LENGTH_LONG).show();
+            //Toast.makeText(cordova.getActivity(), "Unable to Disconnect", Toast.LENGTH_LONG).show();
             callbackContext.error(errMsg);
         }
     }

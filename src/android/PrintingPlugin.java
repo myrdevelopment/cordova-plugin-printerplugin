@@ -3,14 +3,9 @@ package cordova.plugin.printerplugin;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-//import java.io.UnsupportedEncodingException;
 import java.io.InputStream;
 import java.io.OutputStream;
-//import java.util.Hashtable;
-//import java.net.InetAddress;
 import java.util.Arrays;
-//import java.util.EnumMap;
-//import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -25,21 +20,18 @@ import android.hardware.usb.UsbConstants;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.os.Build;
-//import android.os.CountDownTimer;
 import android.util.Log;
 import android.widget.Toast;
-//import org.apache.cordova.CordovaInterface;
+
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CallbackContext;
 import org.json.JSONArray;
 import org.json.JSONException;
-//import org.json.JSONObject;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.os.Environment;
-//import android.os.Handler;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -48,17 +40,14 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Bitmap.Config;
-//import android.util.Xml.Encoding;
+
 import android.util.Base64;
-//import android.view.Gravity;
-//import android.widget.Toast;
+
 import cordova.plugin.base.BasePrinter;
 import cordova.plugin.exceptions.GenericPrinterException;
 import cordova.plugin.usbImplementation.Printer;
 import cordova.plugin.interfaces.IGenericPrinter;
 import cordova.plugin.interfaces.IVariables;
-//import org.json.JSONException;
-//import org.json.JSONObject;
 import java.util.List;
 
 import android.net.wifi.WifiInfo;
@@ -70,13 +59,10 @@ import cordova.plugin.wifiPrinters.Printers;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-//import java.net.DatagramPacket;
-//import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.util.ArrayList;
-//import java.util.LinkedList;
 
 import java.util.Vector;
 import java.util.concurrent.Executor;
@@ -124,7 +110,7 @@ public class PrintingPlugin extends CordovaPlugin {
     @SuppressLint("StaticFieldLeak")
     public PrintingPlugin instance;
     private boolean isStart;
-    private List<BaseDevice> list = new ArrayList<BaseDevice>();
+    private List<BaseDevice> networkDeviceList = new ArrayList<BaseDevice>();
     private WifiManager wifiManager;
     private String ipOfTheWifiPrinter;
     private Socket client = null;
@@ -135,16 +121,12 @@ public class PrintingPlugin extends CordovaPlugin {
     public boolean execute(String action, JSONArray args, final CallbackContext callbackContext) throws JSONException {
 
         if (action.equals("list")) {
-            //String dialog = "{theme : 'HOLO_LIGHT',progressStyle : 'SPINNER',cancelable : true,title : 'Please Wait...',message : 'Checking for connectivity services...'}";
-            //Toast.makeText(cordova.getActivity(), "Scanning...", Toast.LENGTH_LONG).show();
             final JSONArray json = new JSONArray();
             enableServices = enableServices(callbackContext, json);
-            //Toast.makeText(cordova.getActivity(), "Scanning for Printers....", Toast.LENGTH_LONG).show();
             try {
                 findUSBPrinters(callbackContext, listWifiPrinters(listBT(json)));
             } catch (Exception e) {
                 e.printStackTrace();
-                //callbackContext.error(e.getMessage());
             }
             return true;
         } else if (action.equals("feedEntirePrintersList")) {
@@ -152,7 +134,6 @@ public class PrintingPlugin extends CordovaPlugin {
             return true;
         } else if (action.equals("connect")) {
             String name = args.getString(0);
-            //Toast.makeText(cordova.getActivity(), "Connecting...", Toast.LENGTH_SHORT).show();
             if (mmSocket != null) {
                 if (mmSocket.isConnected()) {
                     try {
@@ -372,13 +353,6 @@ public class PrintingPlugin extends CordovaPlugin {
             Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
             if (pairedDevices.size() > 0) {
                 for (BluetoothDevice device : pairedDevices) {
-                    /*
-                     Hashtable map = new Hashtable();
-                     map.put("type", device.getType());
-                     map.put("address", device.getAddress());
-                     map.put("name", device.getName());
-                     JSONObject jObj = new JSONObject(map);
-                     */
                     if (btPrinter(device))
                         json.put(device.getName());
                     Log.d(LOG_TAG, device.getName());
@@ -405,11 +379,7 @@ public class PrintingPlugin extends CordovaPlugin {
             BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             if (mBluetoothAdapter == null) {
                 Log.e(LOG_TAG, "No bluetooth adapter available");
-                //Toast.makeText(cordova.getActivity(), "No Bluetooth Adapter found....", Toast.LENGTH_LONG).show();
             } else if (!mBluetoothAdapter.isEnabled()) {
-//                Intent enableBluetooth = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-//                cordova.getActivity().startActivityForResult(enableBluetooth, 0);
-//                Toast.makeText(cordova.getActivity(), "Please check the connectivity services and try again...", Toast.LENGTH_SHORT).show();
                 Log.d(LOG_TAG, "Bluetooth is turned off,Please turn it on if you want to connect to a bluetooth printer");
                 return false;
             }
@@ -505,15 +475,6 @@ public class PrintingPlugin extends CordovaPlugin {
                                     if (b == delimiter) {
                                         byte[] encodedBytes = new byte[readBufferPosition];
                                         System.arraycopy(readBuffer, 0, encodedBytes, 0, encodedBytes.length);
-                                        /*
-                                         final String data = new String(encodedBytes, "US-ASCII");
-                                         readBufferPosition = 0;
-                                         handler.post(new Runnable() {
-                                         public void run() {
-                                         myLabel.setText(data);
-                                         }
-                                         });
-                                         */
                                     } else {
                                         readBuffer[readBufferPosition++] = b;
                                     }
@@ -772,27 +733,14 @@ public class PrintingPlugin extends CordovaPlugin {
             }
             Log.i("INFO", Arrays.toString(bytes));
             output.write(bytes);
-//            if (success) {
-//                mmOutputStream.write(bytes);
-//                callbackContext.success("Data sent");
-//            } else if (wifiPrinters) {
-//                prints(callbackContext, bytes);
-//            } else if (!success && Printer.usbDeviceConnection != null)
-//               print(callbackContext, bytes);
             Log.d(PRINT, "Successfully appended the barcode data");
         } catch (IOException e) {
             String errMsg = e.getMessage();
             Log.e(LOG_TAG, errMsg);
             e.printStackTrace();
-            //Toast.makeText(cordova.getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
             callbackContext.error(errMsg);
-//        } catch (GenericPrinterException e) {
-//            e.printStackTrace();
-//            Toast.makeText(cordova.getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
-//            callbackContext.error(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            //Toast.makeText(cordova.getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
             callbackContext.error(e.getMessage());
         }
     }
@@ -909,7 +857,6 @@ public class PrintingPlugin extends CordovaPlugin {
             }
             if (!mBluetoothAdapter.isEnabled()) {
                 Log.d(LOG_TAG, "Bluetooth is not enabled. Enabling now...");
-                //Toast.makeText(cordova.getActivity(), "Enable Bluetooth...", Toast.LENGTH_SHORT).show();
                 Intent enableBluetooth = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 this.cordova.getActivity().startActivityForResult(enableBluetooth, 0);
                 this.cordova.setActivityResultCallback(this);
@@ -933,6 +880,40 @@ public class PrintingPlugin extends CordovaPlugin {
         Log.d(LOG_TAG, "printer string fed : " + printers.toString());
         for (String printer : printers) {
             entirePrintersList.put(printer);
+            if (isValidIpAddress(printer)) { // LAN printer
+                String macAddress = getHardwareAddress(printer);
+                Printers printerDevice = new Printers(printer, macAddress);
+                networkDeviceList.add(printerDevice);
+            } else { //BT Printer
+
+            }
+        }
+    }
+
+    public static boolean isValidIpAddress(String ip) {
+        try {
+            if ( ip == null || ip.isEmpty() ) {
+                return false;
+            }
+
+            String[] parts = ip.split( "\\." );
+            if ( parts.length != 4 ) {
+                return false;
+            }
+
+            for ( String s : parts ) {
+                int i = Integer.parseInt( s );
+                if ( (i < 0) || (i > 255) ) {
+                    return false;
+                }
+            }
+            if ( ip.endsWith(".") ) {
+                return false;
+            }
+
+            return true;
+        } catch (NumberFormatException nfe) {
+            return false;
         }
     }
 
@@ -1024,7 +1005,6 @@ public class PrintingPlugin extends CordovaPlugin {
                                 Log.i(TAG, "We try to open the connection to the USB port.");
                                 basePrinter.open(printerDevice);
                                 Log.i(TAG, "The connection to the USB port was opened successfully.");
-                                //print(printerDevice);
                             }
                         } else {
                             Log.i(TAG, "Permission denied to the printing object.");
@@ -1056,7 +1036,6 @@ public class PrintingPlugin extends CordovaPlugin {
                 } catch (GenericPrinterException e) {
                     Log.e(TAG, e.getMessage());
                     e.printStackTrace();
-                    //Toast.makeText(cordova.getActivity(), "Unable to print...", Toast.LENGTH_LONG).show();
                     callbackContext.error(e.getMessage());
                 }
             }
@@ -1108,7 +1087,7 @@ public class PrintingPlugin extends CordovaPlugin {
                 return null;
             }
             isStart = true;
-            list.clear();
+            networkDeviceList.clear();
             Log.d(TAGS, "Getting printer info");
             final Printers printer = getInfo();
             Log.d(TAGS, "Obtain the info of Wifi Printers");
@@ -1118,14 +1097,7 @@ public class PrintingPlugin extends CordovaPlugin {
             for (int i = START_IP; i <= END_IP; i++) {
                 String starIp = getStarOrEndIp(printer.ip, i, true);
                 ips.add(starIp);
-//                Log.d(TAGS, "Adding task");
-//                if (tryToConnect(starIp)) {
-//                    printers.put(starIp);
-//                    Log.d(TAGS, "Printers found in wifi" + printers.toString());
-//                }
             }
-//            final Object wait=new Object();
-//            synchronized (wait){
 
             scanWifi(ips, new PrintingPlugin.OnIPScanningCallback() {
                 @Override
@@ -1136,14 +1108,12 @@ public class PrintingPlugin extends CordovaPlugin {
                         String mac = getHardwareAddress(printerIps);
                         printerList = new Printers(printerIps, mac);
                         printers.put(printerIps);
-                        list.add(printerList);
+                        networkDeviceList.add(printerList);
                     }
                     Log.d(TAGS, "The List of all wifi Printers : " + list);
-//                    wait.notify();
                 }
             });
-//                wait.wait();
-//            }
+
             isStart = false;
         } catch (Exception e) {
             Log.e(TAGS, "Error while scanning for wifi" + e.getMessage());
@@ -1171,7 +1141,6 @@ public class PrintingPlugin extends CordovaPlugin {
             executeTask(new AsyncTask() {
                 @Override
                 protected Object doInBackground(Object[] objects) {
-//                    synchronized (index) {
 
                     for (String ip : child) {
 
@@ -1191,10 +1160,7 @@ public class PrintingPlugin extends CordovaPlugin {
                             //callback.onScanningComplete(results);
                             return null;
                         }
-//                            } else {
-//                                index++;
-//                            }
-//                        }
+
                     }
                     return null;
                 }
@@ -1217,10 +1183,10 @@ public class PrintingPlugin extends CordovaPlugin {
         }
     }
 
-    private boolean findWifiPrinter(String ipOfThePrinter) {
+    private boolean findWifiPrinter(String printerIp) {
         if (enableWifi()) {
-            for (BaseDevice printer : list) {
-                if (printer.ip.equals(ipOfThePrinter))
+            for (BaseDevice printer : networkDeviceList) {
+                if (printer.ip.equals(printerIp))
                     ipOfTheWifiPrinter = printer.ip;
                 Log.d(TAGS, "The Printer to be connected : " + ipOfTheWifiPrinter);
                 return true;
@@ -1304,11 +1270,6 @@ public class PrintingPlugin extends CordovaPlugin {
         ip = isStart ? buffer.append(count).toString() : buffer.append(count).toString();
         return ip;
     }
-
-//    private synchronized boolean tryToConnect(final String ip) {
-//        Log.d(TAGS, ip);
-//        return (connect(ip));
-//    }
 
     private boolean connect(String ip) {
 //        Log.d(TAGS, "Start Scan:" + ip);

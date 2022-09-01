@@ -1110,7 +1110,7 @@ public class PrintingPlugin extends CordovaPlugin {
                         printers.put(printerIps);
                         networkDeviceList.add(printerList);
                     }
-                    Log.d(TAGS, "The List of all wifi Printers : " + list);
+                    Log.d(TAGS, "The List of all wifi Printers : " + networkDeviceList);
                 }
             });
 

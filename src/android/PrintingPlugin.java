@@ -1129,7 +1129,6 @@ public class PrintingPlugin extends CordovaPlugin {
 
     private void scanWifi(final List<String> ips, final PrintingPlugin.OnIPScanningCallback callback) {
         Log.d(TAGS, " scanWifi");
-        final Vector<String> results = new Vector<String>();
         final int totalSize = ips.size();
         final int splitSize = 10;
         resetIndex();
@@ -1148,6 +1147,7 @@ public class PrintingPlugin extends CordovaPlugin {
                         index++;
                         //boolean isPrinter = connect(ip);
                         if (connect(ip)) {
+                            final Vector<String> results = new Vector<String>();
                             results.add(ip);
                             callback.onScanningComplete(results);
                             results.clear();

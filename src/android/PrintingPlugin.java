@@ -1150,7 +1150,6 @@ public class PrintingPlugin extends CordovaPlugin {
                             final Vector<String> results = new Vector<String>();
                             results.add(ip);
                             callback.onScanningComplete(results);
-                            results.clear();
                         }
                         long time = System.currentTimeMillis() - start;
                         Log.d(TAGS, "time taken :" + time);
@@ -1184,6 +1183,7 @@ public class PrintingPlugin extends CordovaPlugin {
     }
 
     private boolean findWifiPrinter(String printerIp) {
+        Log.d(TAGS, "String printerIp : " + printerIp);
         if (enableWifi()) {
             for (BaseDevice printer : networkDeviceList) {
                 if (printer.ip.equals(printerIp))

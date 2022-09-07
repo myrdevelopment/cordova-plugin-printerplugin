@@ -1186,12 +1186,14 @@ public class PrintingPlugin extends CordovaPlugin {
         Log.d(TAGS, "String printerIp : " + printerIp);
         if (enableWifi()) {
             for (BaseDevice printer : networkDeviceList) {
-                if (printer.ip.equals(printerIp))
-                    ipOfTheWifiPrinter = printer.ip;
-                Log.d(TAGS, "The Printer to be connected : " + ipOfTheWifiPrinter);
-                return true;
+                if (printer.ip.equals(printerIp)) {
+                    ipOfTheWifiPrinter = printerIp;
+                    Log.d(TAGS, "The Printer to be connected : " + ipOfTheWifiPrinter);
+                    return true;
+                }
             }
         }
+        ipOfTheWifiPrinter = null;
         return false;
     }
 

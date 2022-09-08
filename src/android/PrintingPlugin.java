@@ -124,7 +124,8 @@ public class PrintingPlugin extends CordovaPlugin {
             final JSONArray json = new JSONArray();
             enableServices = enableServices(callbackContext, json);
             try {
-                findUSBPrinters(callbackContext, listWifiPrinters(listBT(json)));
+                //findUSBPrinters(callbackContext, listWifiPrinters(listBT(json)));
+                findUSBPrinters(callbackContext, listWifiPrinters(json));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -830,7 +831,9 @@ public class PrintingPlugin extends CordovaPlugin {
     private boolean enableServices(final CallbackContext callbackContext, final JSONArray json) {
         String errMsg;
         try {
-
+            enableServices = enableWifi();
+            Log.d(LOG_TAG, "Wifi is enabled : " + String.valueOf(enableServices));
+            /*
             mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             if (mBluetoothAdapter == null) {
                 errMsg = "No bluetooth adapter available";
@@ -867,6 +870,7 @@ public class PrintingPlugin extends CordovaPlugin {
             } else
                 enableServices = enableWifi();
             Log.d(LOG_TAG, "Bluetooth and wifi is enabled : " + String.valueOf(enableServices));
+            */
         } catch (Exception e) {
             Log.e(LOG_TAG, e.getMessage());
         }

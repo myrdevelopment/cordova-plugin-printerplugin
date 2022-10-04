@@ -568,7 +568,11 @@ public class PrintingPlugin extends CordovaPlugin {
             bitmap = resizeImage(bitmap, 48 * 8, mHeight);
 
             byte[] decodedBitmap = decodeBitmap(bitmap);
+            byte[] alignLeftBytes = getAlignLeftBytes();
+            byte[] alignCenterBytes = getAlignCenterBytes();
+            output.write(alignCenterBytes);
             output.write(decodedBitmap);
+            output.write(alignLeftBytes);
             Log.d(PRINT, "Successfully appended the image data");
             callbackContext.success("Success");
         } catch (Exception e) {
@@ -789,6 +793,38 @@ public class PrintingPlugin extends CordovaPlugin {
         }
 
         return hex.toString();
+    }
+
+    private byte[] getAlignCenterBytes() {
+        ArrayList<Byte> command = new ArrayList<Byte>();
+
+        //Commands
+        command.add((byte) 0x1B);
+        command.add((byte) 0x61);
+        command.add((byte) 0x31);
+
+        byte[] bytes = new byte[command.size()];
+        for (int i = 0; i < command.size(); i++) {
+            bytes[i] = command.get(i);
+        }
+
+        return bytes;
+    }
+
+    private byte[] getAlignLeftBytes() {
+        ArrayList<Byte> command = new ArrayList<Byte>();
+
+        //Commands
+        command.add((byte) 0x1B);
+        command.add((byte) 0x61);
+        command.add((byte) 0x30);
+
+        byte[] bytes = new byte[command.size()];
+        for (int i = 0; i < command.size(); i++) {
+            bytes[i] = command.get(i);
+        }
+
+        return bytes;
     }
 
     private String[] binaryArray = {"0000", "0001", "0010", "0011",

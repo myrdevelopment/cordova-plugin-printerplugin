@@ -296,6 +296,16 @@ public class PrintingPlugin extends CordovaPlugin {
                 callbackContext.error(e.getMessage());
             }
             return true;
+        } else if (action.equals("printBase64Image")) {
+            try {
+                String msg = args.getString(0);
+                printImage(callbackContext, msg);
+            } catch (IOException e) {
+                Log.e(PRINT, e.getMessage());
+                e.printStackTrace();
+                callbackContext.error(e.getMessage());
+            }
+            return true;
         } else if (action.equals("printText") || action.equals("printQrCode")) {
             try {
                 String msg = args.getString(0);
